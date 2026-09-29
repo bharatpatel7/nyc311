@@ -1,0 +1,2 @@
+Hello, World!
+Python File I/O is easy.
