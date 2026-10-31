@@ -20,7 +20,9 @@ ENV_FILE="$(cd "$(dirname "$0")/../.." && pwd)/.env"
 if [[ "${1:-}" == "delete" ]]; then
   echo "Deleting $VM and its disk, NIC, IP and security group"
   az vm delete -g "$RESOURCE_GROUP" -n "$VM" --yes -o none
-  az disk list -g "$RESOURCE_GROUP" --query "[?starts_with(name, '$VM')].id" -o tsv | xargs -r az disk delete --yes --ids -o none
+  for disk in $(az disk list -g "$RESOURCE_GROUP" --query "[?starts_with(name, '$VM')].id" -o tsv); do
+    az disk delete --yes --ids "$disk" -o none
+  done
   az network nic delete -g "$RESOURCE_GROUP" -n "${VM}VMNic" -o none 2>/dev/null || true
   az network public-ip delete -g "$RESOURCE_GROUP" -n "${VM}PublicIP" -o none 2>/dev/null || true
   az network nsg delete -g "$RESOURCE_GROUP" -n "${VM}NSG" -o none 2>/dev/null || true
