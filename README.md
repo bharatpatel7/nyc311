@@ -1,89 +1,70 @@
-# 311 Complaint Patterns and Response Times
+# NYC311
 
-An interactive map-based dashboard for NYC 311 complaint data, highlighting trends, resolution times, and service hotspots. It enables users to explore patterns and identify areas requiring attention.
+An interactive dashboard for New York City's 311 service requests: where complaints
+pile up, how fast each city agency responds, and what's rising right now. The live
+site rebuilds itself from NYC Open Data every 8 hours and runs on Azure at $0.
 
-## Features
+**Live:** https://nyc311.bharat.has-a.tech
 
-- **3D city view**: complaints stack into extruded hexagon columns over a tilted, rotatable map of NYC (deck.gl + MapLibre), with heatmap and point modes
-- **Glass-style dark UI**: animated landing page, KPI overview, and dashboard views built with React, Tailwind CSS and Recharts
-- **Cluster map**: clustered markers across NYC with zoom, pan, and popup details
-- **Complaint filtering**: filter by borough, complaint type, status, and date range; every view shares the same filters
-- **Resolution times and volume trends**: compare agency response times and complaint volume over time
-- **Auto-refresh**: data reloads on a configurable interval with a "Last updated" indicator
+## What's in it
 
-## Prerequisites
+- **3D City**: complaints stacked into extruded hexagon columns over a tilted, rotatable map of NYC, with heatmap and point modes
+- **Explorer**: every request on one map, coloured by category, filtered by status and time of day, with click-for-details
+- **Scorecard**: each agency's median time to close, share closed within 24 hours, open backlog and time-to-close distribution, plus the fastest and slowest complaint types
+- **City Pulse**: requests per hour, a typical day, and the complaint types rising in the last 24 hours
+- **Insights**: a three-page Power BI report built on an Azure SQL star schema with DAX measures
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
-- [Git](https://git-scm.com/)
-- [NYC Open Data API Token](https://data.cityofnewyork.us)
-- [CONTRIBUTING.md](CONTRIBUTING.md) for branching strategy, commit conventions, code style, and testing guidelines
+## How it's built
 
-## Quick Start
+```
+NYC Open Data → Python ingestor → MariaDB → Spring Boot API → React (deck.gl, MapLibre, Recharts)
+                                     │
+GitHub Actions (every 8 h): run that chain, snapshot the API to JSON → Azure Static Web Apps
+                                     │
+                         azure-sync → Azure SQL → Power BI
+```
 
-1. Clone the repository
+| Doc | What it covers |
+|---|---|
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | How it works: services, where each page gets its data, the static data mode, notes on the numbers |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | How it's built and deployed: the GitHub Actions run, Azure and domain setup, secrets, staying at $0, troubleshooting |
+| [analytics/README.md](analytics/README.md) | Azure SQL star schema, the sync job, and building the Power BI report |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Branching, commit conventions, code style and tests |
+
+**Stack:** React Router 7, TypeScript, Vite, Tailwind CSS 4, deck.gl, MapLibre, Recharts ·
+Spring Boot 3 (Java 21) · Python 3.12 · MariaDB 11 · Docker Compose · GitHub Actions ·
+Azure Static Web Apps, Azure SQL Database · Power BI Desktop, DAX
+
+## Run it locally
+
+You need Docker and an NYC Open Data API key pair (free: sign in at
+[data.cityofnewyork.us](https://data.cityofnewyork.us) → Developer Settings → API Keys).
 
 ```bash
 git clone https://github.com/bharatpatel7/nyc311.git
 cd nyc311
+cp .env.example .env          # add NYC_API_KEY_ID / NYC_API_KEY_SECRET and choose DB passwords
+make build                    # docker compose up --build -d
 ```
 
-2. Create your environment file
-
-```bash
-cp .env.example .env
-```
-
-3. Create API token: [NYC Open DataAPI Token](https://data.cityofnewyork.us)
-
-4. Update `.env` to include the API token and database credentials.
-
-Example:
-
-```bash
-NYC_APP_TOKEN=see_prerequisites
-
-BATCH_SIZE=100
-BATCH_DELAY_SECONDS=14400
-REFRESH_INTERVAL_SECONDS=86400
-
-DB_HOST=db
-DB_PORT=3306
-DB_NAME=devdb
-DB_USER=dev
-DB_PASSWORD=dev
-DB_ROOT_PASSWORD=root
-```
-
-5. Build and start all services
-
-```bash
-make build
-```
-
-## Services
-
-| Service  | URL                   |
-| :------- | :-------------------- |
+| Service | URL |
+| :-- | :-- |
 | Frontend | http://localhost:3000 |
-| Backend  | http://localhost:8080 |
-| Ingestor | http://localhost:8001 |
-| Database | localhost:3306        |
+| Backend API | http://localhost:8080/api/health |
+| Database | localhost:3306 |
 
-## Refresh Logger
+The ingestor starts loading the newest requests straight away; refresh the page after
+a minute. Each refresh is logged in `data_refresh_log`, which drives the "Updated …"
+badge in the header.
 
-The ingestor tracks each data refresh cycle in the `data_refresh_log` table. A `RefreshLogger` is initialized with the database connection at the start of each cycle, recording an `IN_PROGRESS` status. On success it writes `SUCCESS` with the total record count; on failure it writes `FAILED` and re-raises the exception. The frontend queries this table to display a "Last updated: X min ago" indicator.
-
-## Useful Commands
+## Useful commands
 
 ```bash
-make             # displays full list of available commands
-
-make build       # docker compose up --build -d
-make up          # docker compose up -d
-make down        # docker compose down
-
-make test        # run all tests
+make             # list every command
+make up | down   # start / stop the stack
+make test        # run all test suites
 make lint        # lint all services
-make ci          # run complete pipeline (lint/test/style)
+make ci          # lint, test and style checks
 ```
+
+Frontend only (from `frontend/`): `npm run dev`, `npm test`, `npm run type-check`, `npm run lint`.

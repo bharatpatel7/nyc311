@@ -1,0 +1,128 @@
+# Build the site with fresh NYC 311 data and publish it to Azure Static Web Apps.
+#
+# Each run starts an empty MariaDB, loads the latest requests with the ingestor,
+# starts the Spring Boot API against it, saves every API response the frontend
+# needs as static JSON (frontend/scripts/build-snapshot.mjs), builds the frontend
+# in static mode and uploads it. Nothing runs on a server between builds.
+# See docs/DEPLOYMENT.md.
+name: Build and deploy
+
+on:
+  schedule:
+    - cron: "23 */8 * * *" # every 8 hours
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - "backend/**"
+      - "ingestor/**"
+      - "database/**"
+      - ".github/workflows/deploy.yml"
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  DB_NAME: devdb
+  DB_USER: ci
+  DB_PASSWORD: ci-only-password
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      db:
+        image: mariadb:11
+        env:
+          MARIADB_DATABASE: devdb
+          MARIADB_USER: ci
+          MARIADB_PASSWORD: ci-only-password
+          MARIADB_ROOT_PASSWORD: ci-only-root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create the schema
+        run: docker exec -i ${{ job.services.db.id }} mariadb -uroot -pci-only-root < database/init.sql
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: ingestor/requirements.txt
+
+      - name: Load the latest 311 requests
+        working-directory: ingestor
+        env:
+          NYC_API_KEY_ID: ${{ secrets.NYC_API_KEY_ID }}
+          NYC_API_KEY_SECRET: ${{ secrets.NYC_API_KEY_SECRET }}
+          DB_HOST: 127.0.0.1
+          DB_PORT: "3306"
+          BATCH_SIZE: "10000" # pages of 10,000, stopping after ~100,000 (about 10 days)
+          BATCH_DELAY_SECONDS: "2"
+          RUN_ONCE: "1"
+          PYTHONUNBUFFERED: "1"
+        run: |
+          pip install -r requirements.txt
+          python main.py
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Start the API
+        working-directory: backend
+        env:
+          SPRING_PROFILES_ACTIVE: prod
+          SPRING_DATASOURCE_URL: jdbc:mariadb://127.0.0.1:3306/devdb
+          SPRING_DATASOURCE_USERNAME: ci
+          SPRING_DATASOURCE_PASSWORD: ci-only-password
+        run: |
+          ./gradlew bootJar --no-daemon -q
+          jar=$(find build/libs -name '*.jar' ! -name '*-plain.jar' | head -1)
+          nohup java -jar "$jar" > api.log 2>&1 &
+          for _ in $(seq 1 60); do
+            curl -sf http://localhost:8080/api/health && exit 0
+            sleep 2
+          done
+          cat api.log
+          exit 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Snapshot the API and build the site
+        working-directory: frontend
+        env:
+          VITE_DATA_SOURCE: static
+        run: |
+          npm ci
+          node scripts/build-snapshot.mjs http://localhost:8080 public/data
+          npm run build
+
+      - name: Upload to Azure Static Web Apps
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: frontend/build/client
+          skip_app_build: true
+          skip_api_build: true
