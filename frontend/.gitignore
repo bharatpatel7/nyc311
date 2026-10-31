@@ -3,3 +3,6 @@ node_modules/
 dist/
 coverage/
 .DS_Store
+
+# Snapshot written by scripts/build-snapshot.mjs (built in CI, not committed)
+public/data/

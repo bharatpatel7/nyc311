@@ -13,6 +13,11 @@ import type { Route } from "./+types/root";
 import "./styles/index.css";
 import type { ReactNode } from "react";
 import { FilterProvider } from "./context/FilterProvider";
+import { IS_STATIC_DATA, installStaticApi } from "./lib/staticApi";
+
+// the deployed build has no backend; answer /api requests from the snapshot files
+if (IS_STATIC_DATA && typeof window !== "undefined") installStaticApi();
+
 // eslint-disable-next-line react-refresh/only-export-components
 export const links: Route.LinksFunction = () => [];
 

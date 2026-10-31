@@ -1,5 +1,7 @@
 package com.example.controller;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -89,6 +91,8 @@ public class GeoController {
         c.getBorough(),
         createdDate,
         c.getStatus(),
-        agencyName);
+        agencyName,
+        c.getCreatedDate() != null ? c.getCreatedDate().format(ISO_LOCAL_DATE_TIME) : null,
+        c.getClosedDate() != null ? c.getClosedDate().format(ISO_LOCAL_DATE_TIME) : null);
   }
 }

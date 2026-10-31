@@ -5,6 +5,7 @@ validates and parses each record, then upserts them into a database.
 """
 
 import os
+import sys
 import time
 from dataclasses import dataclass
 from typing import Optional, cast
@@ -28,6 +29,7 @@ from constants import (
     RETRY_DELAY,
     BATCH_DELAY_SECONDS,
     REFRESH_INTERVAL_SECONDS,
+    RUN_ONCE,
     MAX_RECORDS,
     TABLES,
 )
@@ -264,8 +266,9 @@ def upsert_agency(cursor: pymysql.cursors.Cursor, agency_name: str) -> Optional[
     return row[0] if row else None
 
 
-def run():
+def run() -> bool:
     while True:
+        ok = False
         page = 1
         total_records = 0
         logger = None
@@ -291,6 +294,7 @@ def run():
                     time.sleep(BATCH_DELAY_SECONDS)
 
                 logger.complete(total_records)
+                ok = True
         except Exception as e:
             error_message = str(e)
             print(f"Refresh cycle failed: {error_message}")
@@ -302,10 +306,13 @@ def run():
                 except Exception as log_err:
                     print(f"Failed to log failure: {log_err}")
 
+        if RUN_ONCE:
+            return ok
+
         print(f"Sleeping for {REFRESH_INTERVAL_SECONDS}s")
         time.sleep(REFRESH_INTERVAL_SECONDS)
 
 
 if __name__ == "__main__":
     print("INGESTOR UP")
-    run()
+    sys.exit(0 if run() else 1)

@@ -91,6 +91,8 @@ class GeoControllerTest {
         .andExpect(jsonPath("$[0].complaintType").value(TYPE_NOISE))
         .andExpect(jsonPath("$[0].borough").value(BOROUGH_MANHATTAN))
         .andExpect(jsonPath("$[0].createdDate").value(DATE_1))
+        .andExpect(jsonPath("$[0].createdAt").value(DATE_1 + "T00:00:00"))
+        .andExpect(jsonPath("$[0].closedAt").doesNotExist())
         .andExpect(jsonPath("$[0].status").value(STATUS_OPEN))
         .andExpect(jsonPath("$[0].agencyName").value(AGENCY_DOT))
         .andExpect(jsonPath("$[1].agencyName").doesNotExist());

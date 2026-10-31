@@ -42,4 +42,6 @@ MAX_RETRIES = 3
 RETRY_DELAY = 60
 BATCH_DELAY_SECONDS = int(os.getenv("BATCH_DELAY_SECONDS", "60"))
 BATCH_SIZE = int(os.getenv("BATCH_SIZE", "1000"))
+# RUN_ONCE=1 does a single refresh and exits (used by the GitHub Actions snapshot build)
+RUN_ONCE = os.getenv("RUN_ONCE", "") == "1"
 MAX_RECORDS = BATCH_SIZE * 10 if BATCH_SIZE <= 10000 else 100000
