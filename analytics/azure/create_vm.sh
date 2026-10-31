@@ -10,7 +10,7 @@ set -euo pipefail
 RESOURCE_GROUP="nyc311-rg"
 LOCATION="canadacentral"
 VM="nyc311-pbi"
-SIZE="Standard_B2s"                    # 2 vCPU, 4 GB RAM: enough for Power BI Desktop
+SIZE="Standard_B2ms"                   # 2 vCPU, 8 GB RAM; 4 GB is too little for Power BI Desktop
 IMAGE="MicrosoftWindowsServer:WindowsServer:2022-datacenter-smalldisk-g2:latest"
 ADMIN_USER="nyc311"
 SHUTDOWN_UTC="0400"                    # 11 PM Eastern (midnight during daylight time)
