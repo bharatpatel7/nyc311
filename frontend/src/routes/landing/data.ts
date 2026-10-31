@@ -5,25 +5,26 @@ export const FEATURES = [
       "Complaints stack into glowing columns over a tilted city. Hotspots jump out at a glance.",
   },
   {
-    title: "Filter anything",
+    title: "Complaint explorer",
     description:
-      "Narrow by borough, complaint type, status and date range. Every view updates together.",
+      "Every request on one map, coloured by category. Filter by status and time of day, then click a dot for its story.",
   },
   {
-    title: "Response times",
-    description: "Compare how quickly each city agency closes the requests it receives.",
+    title: "Agency scorecard",
+    description:
+      "See how quickly each city agency closes its requests, how many are still open, and which complaint types take longest.",
   },
   {
-    title: "Trends over time",
+    title: "City pulse",
     description:
-      "Follow complaint volume day by day and spot seasonal spikes, like heat in winter.",
+      "Requests hour by hour, the busiest time of day, and the complaint types rising in the last 24 hours.",
   },
 ];
 
 export const PIPELINE = [
   { title: "NYC Open Data", description: "Public 311 service request feed" },
-  { title: "Python ingestor", description: "Pulls new records on a schedule" },
-  { title: "MariaDB", description: "Stores and indexes every request" },
+  { title: "Python ingestor", description: "Loads the latest requests into MariaDB" },
   { title: "Spring Boot API", description: "Serves filtered points and stats" },
-  { title: "React + deck.gl", description: "Renders the 3D map and charts" },
+  { title: "GitHub Actions", description: "Snapshots fresh data every few hours" },
+  { title: "Azure", description: "Static Web Apps hosting, SQL + Power BI" },
 ];

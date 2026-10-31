@@ -143,21 +143,6 @@
   }
 }
 
-/* OSM raster tiles inverted into a dark basemap for the cluster map */
-.leaflet-container {
-  background: #0b0f19;
-}
-.leaflet-tile-pane {
-  filter: invert(1) hue-rotate(200deg) brightness(0.85) contrast(0.9) saturate(0.4);
-}
-.leaflet-control-attribution {
-  background: rgb(10 14 25 / 0.6) !important;
-  color: #94a3b8 !important;
-}
-.leaflet-control-attribution a {
-  color: #cbd5e1 !important;
-}
-
 .maplibregl-ctrl-attrib {
   background: rgb(10 14 25 / 0.6) !important;
   color: #94a3b8 !important;
@@ -244,13 +229,6 @@
 
 .cluster-icon-circle:hover svg {
   filter: brightness(1.4);
-}
-
-.leaflet-cluster-anim .leaflet-marker-icon,
-.leaflet-cluster-anim .leaflet-marker-shadow {
-  transition:
-    transform 0.2s ease-out,
-    opacity 0.2s ease-out !important;
 }
 
 .active-badge {

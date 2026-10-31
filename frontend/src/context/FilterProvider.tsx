@@ -1,6 +1,6 @@
 import type { GeoPoint, FilterState, ActiveFilters, ComplaintType, Borough, Status } from "@/types";
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
-import useFilterOptions from "@/components/feature/ClusterMap/components/CategoryFilter/useFilterOptions";
+import useFilterOptions from "@/hooks/useFilterOptions";
 import { usePersistedAgency, useResolutionTime } from "@/api/resolutionTime";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { MOCK_RESOLUTION_TIME } from "@/api/resolutionTime/mock";

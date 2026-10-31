@@ -4,9 +4,9 @@ import { FiActivity, FiBarChart, FiBox, FiClock, FiGrid, FiMapPin } from "react-
 const navItems = [
   { to: "/dashboard", label: "Overview", icon: FiGrid, end: true },
   { to: "/dashboard/city", label: "3D City", icon: FiBox },
-  { to: "/dashboard/map", label: "Cluster Map", icon: FiMapPin },
-  { to: "/dashboard/trendchart", label: "Resolution Times", icon: FiClock },
-  { to: "/dashboard/timechart", label: "Complaint Volumes", icon: FiActivity },
+  { to: "/dashboard/explorer", label: "Explorer", icon: FiMapPin },
+  { to: "/dashboard/scorecard", label: "Scorecard", icon: FiClock },
+  { to: "/dashboard/pulse", label: "City Pulse", icon: FiActivity },
   { to: "/dashboard/insights", label: "Insights", icon: FiBarChart },
 ];
 

@@ -1,1 +1,0 @@
-export { DepartmentFilter } from "./SortControl";

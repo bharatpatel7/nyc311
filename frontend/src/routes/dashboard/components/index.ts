@@ -1,5 +1,4 @@
 export { default as Stat } from "./Stat";
-export { default as MapCard } from "./MapCard";
 export { default as DashboardFooter } from "./DashboardFooter";
 export { default as PageBackground } from "./PageBackground";
 export { default as PageContainer } from "./PageContainer";
