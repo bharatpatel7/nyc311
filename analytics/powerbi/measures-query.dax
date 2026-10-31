@@ -15,7 +15,12 @@ DEFINE
         )
     MEASURE fact_complaint[Closed Within 24h %] =
         DIVIDE (
-            CALCULATE ( [Complaints], fact_complaint[resolution_hours] <= 24 ),
+            -- BLANK <= 24 is true in DAX, so exclude open complaints explicitly
+            CALCULATE (
+                [Complaints],
+                fact_complaint[resolution_hours] <= 24,
+                NOT ISBLANK ( fact_complaint[resolution_hours] )
+            ),
             CALCULATE ( [Complaints], NOT ISBLANK ( fact_complaint[resolution_hours] ) )
         )
     MEASURE fact_complaint[Complaints per Day] =
