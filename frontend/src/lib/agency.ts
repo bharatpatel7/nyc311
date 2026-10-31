@@ -33,6 +33,9 @@ export const AGENCIES: Agency[] = [
   "CEO",
   "MOC",
   "OMB",
+  "DCWP",
+  "OOS",
+  "OTI",
 ];
 
 export const AGENCY_LABELS: Record<Agency, string> = {
@@ -67,6 +70,9 @@ export const AGENCY_LABELS: Record<Agency, string> = {
   CEO: "Chief Executive Office",
   MOC: "Mayor's Office of Contracts",
   OMB: "Office of Management and Budget",
+  DCWP: "Consumer and Worker Protection",
+  OOS: "Office of the Sheriff",
+  OTI: "Office of Technology and Innovation",
 };
 
 export const AGENCY_STORAGE_KEY = "selected-agency";

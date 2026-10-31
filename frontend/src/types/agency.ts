@@ -29,7 +29,10 @@ export type Agency =
   | "COIB"
   | "CEO"
   | "MOC"
-  | "OMB";
+  | "OMB"
+  | "DCWP"
+  | "OOS"
+  | "OTI";
 
 export interface MedianMinutes {
   medianMinutes: number;

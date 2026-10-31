@@ -52,7 +52,8 @@ export default function Dashboard() {
 
   const total = useCountUp(loading ? 0 : summary.totalComplaints);
 
-  const boroughs = [...summary.complaintsByBorough]
+  const boroughs = summary.complaintsByBorough
+    .filter((b) => b.borough !== "Unspecified")
     .sort((a, b) => b.count - a.count)
     .map((b) => ({ ...b, borough: titleCase(b.borough) }));
   const agencies = [...summary.complaintsByAgency].sort((a, b) => b.count - a.count);

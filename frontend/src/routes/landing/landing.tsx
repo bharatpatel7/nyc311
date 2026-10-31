@@ -132,7 +132,12 @@ export default function Landing() {
             <div className="glass mt-12 grid max-w-md grid-cols-3 gap-6 rounded-2xl px-6 py-5">
               <HeroStat value={summary.totalComplaints} label="Complaints" />
               <HeroStat value={summary.complaintsByAgency.length} label="Agencies" />
-              <HeroStat value={summary.complaintsByBorough.length} label="Boroughs" />
+              <HeroStat
+                value={
+                  summary.complaintsByBorough.filter((b) => b.borough !== "Unspecified").length
+                }
+                label="Boroughs"
+              />
             </div>
           </div>
         </div>

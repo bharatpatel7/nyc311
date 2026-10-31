@@ -147,6 +147,9 @@ const City3D = ({
         data: points,
         getPosition: (d) => [d.longitude, d.latitude],
         gpuAggregation: false,
+        // square root keeps a few extreme addresses from flattening every other column
+        getElevationValue: (pts: GeoPoint[]) => Math.sqrt(pts.length),
+        colorScaleType: "quantile",
         radius,
         coverage: 0.82,
         extruded: true,
