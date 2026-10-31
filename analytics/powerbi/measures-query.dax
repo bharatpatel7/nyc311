@@ -1,0 +1,44 @@
+// Paste this whole file into Power BI Desktop's DAX query view (4th icon in the left bar),
+// click "Update model with changes" to add every measure at once, then "Run" to check the numbers.
+DEFINE
+    MEASURE fact_complaint[Complaints] = COUNTROWS ( fact_complaint )
+    MEASURE fact_complaint[Closed Complaints] =
+        CALCULATE ( [Complaints], fact_complaint[is_closed] = TRUE () )
+    MEASURE fact_complaint[Open Complaints] = [Complaints] - [Closed Complaints]
+    MEASURE fact_complaint[Closure Rate] = DIVIDE ( [Closed Complaints], [Complaints] )
+    MEASURE fact_complaint[Median Resolution Hours] = MEDIAN ( fact_complaint[resolution_hours] )
+    MEASURE fact_complaint[P90 Resolution Hours] =
+        PERCENTILEX.INC (
+            FILTER ( fact_complaint, NOT ISBLANK ( fact_complaint[resolution_hours] ) ),
+            fact_complaint[resolution_hours],
+            0.9
+        )
+    MEASURE fact_complaint[Closed Within 24h %] =
+        DIVIDE (
+            CALCULATE ( [Complaints], fact_complaint[resolution_hours] <= 24 ),
+            CALCULATE ( [Complaints], NOT ISBLANK ( fact_complaint[resolution_hours] ) )
+        )
+    MEASURE fact_complaint[Complaints per Day] =
+        DIVIDE ( [Complaints], DISTINCTCOUNT ( fact_complaint[created_date_key] ) )
+    MEASURE fact_complaint[Share of Complaints] =
+        DIVIDE ( [Complaints], CALCULATE ( [Complaints], ALL ( dim_complaint_type ) ) )
+    MEASURE fact_complaint[Busiest Hour] =
+        MAXX (
+            TOPN ( 1, VALUES ( fact_complaint[created_hour] ), [Complaints] ),
+            fact_complaint[created_hour]
+        )
+    MEASURE fact_complaint[Complaints Closed on Date] =
+        CALCULATE (
+            [Closed Complaints],
+            USERELATIONSHIP ( fact_complaint[closed_date_key], dim_date[date_key] )
+        )
+
+EVALUATE
+ROW (
+    "Complaints", [Complaints],
+    "Closed", [Closed Complaints],
+    "Closure Rate", [Closure Rate],
+    "Median Resolution Hours", [Median Resolution Hours],
+    "Closed Within 24h %", [Closed Within 24h %],
+    "Busiest Hour", [Busiest Hour]
+)
