@@ -12,6 +12,8 @@ from datetime import datetime
 import pymysql
 import requests
 from constants import (
+    API_KEY_ID,
+    API_KEY_SECRET,
     APP_TOKEN,
     BATCH_SIZE,
     HTTP,
@@ -47,9 +49,15 @@ def fetch(page: int = 1, page_size: int = BATCH_SIZE) -> list[dict]:
         RuntimeError: If the request fails after ``MAX_RETRIES`` attempts.
     """
     print(f"Fetching complaint data: {page_size} complaints from page {page}")
-    headers = {"Accept": "application/json", "X-App-Token": APP_TOKEN}
+    headers = {"Accept": "application/json"}
+    auth = None
+    if API_KEY_ID and API_KEY_SECRET:
+        auth = (API_KEY_ID, API_KEY_SECRET)
+    else:
+        headers["X-App-Token"] = APP_TOKEN
     data = {
-        "query": "SELECT *",
+        # newest first, so each refresh picks up the latest complaints
+        "query": "SELECT * ORDER BY created_date DESC",
         "page": {"pageNumber": page, "pageSize": page_size},
         "includeSynthetic": False,
     }
@@ -60,6 +68,7 @@ def fetch(page: int = 1, page_size: int = BATCH_SIZE) -> list[dict]:
             response = requests.post(
                 NYC_OPEN_DATA["complaints"],
                 headers=headers,
+                auth=auth,
                 json=data,
                 timeout=MAX_TIMEOUT,
             )

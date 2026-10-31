@@ -34,6 +34,9 @@ NYC_LNG_MAX = -73.55
 load_dotenv()
 
 APP_TOKEN = os.getenv("NYC_APP_TOKEN", "")
+# API key pair (Developer Settings → API Keys); sent as basic auth and preferred over APP_TOKEN
+API_KEY_ID = os.getenv("NYC_API_KEY_ID", "")
+API_KEY_SECRET = os.getenv("NYC_API_KEY_SECRET", "")
 REFRESH_INTERVAL_SECONDS = int(os.getenv("REFRESH_INTERVAL_SECONDS", "360"))
 MAX_RETRIES = 3
 RETRY_DELAY = 60

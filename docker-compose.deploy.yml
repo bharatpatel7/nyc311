@@ -26,7 +26,9 @@ services:
     build: ./ingestor
     environment:
       NYC_API_BASE_URL: https://data.cityofnewyork.us/resource/erm2-nwe9.json
-      NYC_APP_TOKEN: ${NYC_APP_TOKEN:?NYC_APP_TOKEN is required}
+      NYC_APP_TOKEN: ${NYC_APP_TOKEN:-}
+      NYC_API_KEY_ID: ${NYC_API_KEY_ID:-}
+      NYC_API_KEY_SECRET: ${NYC_API_KEY_SECRET:-}
       DB_USER: ${DB_USER:?DB_USER is required}
       DB_HOST: ${DB_HOST:?DB_HOST is required}
       DB_PORT: ${DB_PORT:?DB_PORT is required}
