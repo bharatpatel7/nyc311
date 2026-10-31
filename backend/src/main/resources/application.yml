@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: complaints
+  datasource:
+    url: jdbc:mariadb://db:3306/${DB_NAME:?DB_NAME is required}
+    username: ${DB_USER:?DB_USER is required}
+    password: ${DB_PASSWORD:?DB_PASSWORD is required}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MariaDBDialect
+server:
+  port: 8080

@@ -1,0 +1,8 @@
+[tool.pytest.ini_options]
+testpaths = ["."]
+python_files = ["*_test.py"]
+python_functions = ["test_*"]
+cache_dir = "/tmp/.pytest_cache"
+
+[tool.black]
+line-length = 88
