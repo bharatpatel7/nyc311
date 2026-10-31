@@ -1,0 +1,45 @@
+// DAX measures for the NYC 311 semantic model.
+// Add them to the fact_complaint table (Home → New measure), one at a time.
+
+Complaints = COUNTROWS ( fact_complaint )
+
+Closed Complaints =
+CALCULATE ( [Complaints], fact_complaint[is_closed] = TRUE () )
+
+Open Complaints = [Complaints] - [Closed Complaints]
+
+Closure Rate = DIVIDE ( [Closed Complaints], [Complaints] )
+
+Median Resolution Hours = MEDIAN ( fact_complaint[resolution_hours] )
+
+P90 Resolution Hours =
+PERCENTILEX.INC (
+    FILTER ( fact_complaint, NOT ISBLANK ( fact_complaint[resolution_hours] ) ),
+    fact_complaint[resolution_hours],
+    0.9
+)
+
+Closed Within 24h % =
+DIVIDE (
+    CALCULATE ( [Complaints], fact_complaint[resolution_hours] <= 24 ),
+    CALCULATE ( [Complaints], NOT ISBLANK ( fact_complaint[resolution_hours] ) )
+)
+
+Complaints per Day =
+DIVIDE ( [Complaints], DISTINCTCOUNT ( fact_complaint[created_date_key] ) )
+
+Share of Complaints =
+DIVIDE ( [Complaints], CALCULATE ( [Complaints], ALL ( dim_complaint_type ) ) )
+
+Busiest Hour =
+MAXX (
+    TOPN ( 1, VALUES ( fact_complaint[created_hour] ), [Complaints] ),
+    fact_complaint[created_hour]
+)
+
+// Uses the inactive closed-date relationship: complaints closed on each day
+Complaints Closed on Date =
+CALCULATE (
+    [Closed Complaints],
+    USERELATIONSHIP ( fact_complaint[closed_date_key], dim_date[date_key] )
+)

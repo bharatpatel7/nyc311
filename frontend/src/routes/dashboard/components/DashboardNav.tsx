@@ -1,5 +1,5 @@
 import { NavLink } from "react-router";
-import { FiActivity, FiBox, FiClock, FiGrid, FiMapPin } from "react-icons/fi";
+import { FiActivity, FiBarChart, FiBox, FiClock, FiGrid, FiMapPin } from "react-icons/fi";
 
 const navItems = [
   { to: "/dashboard", label: "Overview", icon: FiGrid, end: true },
@@ -7,6 +7,7 @@ const navItems = [
   { to: "/dashboard/map", label: "Cluster Map", icon: FiMapPin },
   { to: "/dashboard/trendchart", label: "Resolution Times", icon: FiClock },
   { to: "/dashboard/timechart", label: "Complaint Volumes", icon: FiActivity },
+  { to: "/dashboard/insights", label: "Insights", icon: FiBarChart },
 ];
 
 const DashboardNav = () => (

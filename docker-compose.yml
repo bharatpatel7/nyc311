@@ -10,6 +10,7 @@ services:
     environment:
       VITE_BACKEND_URL: http://backend:8080
       VITE_REFRESH_INTERVAL_SECONDS: ${REFRESH_INTERVAL_SECONDS:?REFRESH_INTERVAL_SECONDS is required}
+      VITE_POWERBI_EMBED_URL: ${POWERBI_EMBED_URL:-}
     depends_on:
       - backend
     ports:
@@ -66,6 +67,27 @@ services:
       PYTHONUNBUFFERED: 1
     profiles:
       - test
+
+  azure-sync:
+    build:
+      context: ./analytics
+      dockerfile: sync/Dockerfile
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:?DB_NAME is required}
+      DB_USER: ${DB_USER:?DB_USER is required}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      AZURE_SQL_SERVER: ${AZURE_SQL_SERVER:-}
+      AZURE_SQL_DATABASE: ${AZURE_SQL_DATABASE:-}
+      AZURE_SQL_USER: ${AZURE_SQL_USER:-}
+      AZURE_SQL_PASSWORD: ${AZURE_SQL_PASSWORD:-}
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles:
+      - analytics
 
   db:
     image: mariadb:11

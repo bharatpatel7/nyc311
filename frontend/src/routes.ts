@@ -9,6 +9,7 @@ export default [
       route("map", "routes/dashboard/dashboard-map.tsx"),
       route("trendchart", "routes/dashboard/dashboard-trendchart.tsx"),
       route("timechart", "routes/dashboard/dashboard-timechart.tsx"),
+      route("insights", "routes/dashboard/dashboard-insights.tsx"),
     ]),
   ]),
   route("*", "routes/not-found.tsx"),

@@ -13,6 +13,7 @@ const renderDashboardNav = (initialEntry: string) =>
           <Route path="map" element={<DashboardNav />} />
           <Route path="trendchart" element={<DashboardNav />} />
           <Route path="timechart" element={<DashboardNav />} />
+          <Route path="insights" element={<DashboardNav />} />
         </Route>
       </Routes>
     </MemoryRouter>
@@ -23,6 +24,7 @@ describe("dashboard nav", () => {
     renderDashboardNav("/dashboard/map");
 
     expect(screen.getByRole("link", { name: "3D City" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Insights" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Overview" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Cluster Map" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Resolution Times" })).toBeInTheDocument();
