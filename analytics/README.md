@@ -23,6 +23,9 @@ az login
 ./analytics/azure/provision.sh            # defaults to canadacentral
 ```
 
+On a brand-new subscription, enable the SQL service once first:
+`az provider register --namespace Microsoft.Sql --wait`.
+
 The database uses the **Azure SQL free offer** (100,000 vCore-seconds and 32 GB
 per month) and pauses itself after an hour idle. When the monthly free amount
 runs out it pauses until next month instead of billing.

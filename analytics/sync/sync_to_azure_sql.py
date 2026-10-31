@@ -67,6 +67,12 @@ def category_for(complaint_type: str) -> str:
     return "Other"
 
 
+def normalize_type(complaint_type: str) -> str:
+    """The source mixes "PLUMBING" and "Plumbing"; title-case the all-caps ones so they merge."""
+    cleaned = complaint_type.strip()
+    return cleaned.title() if cleaned.isupper() else cleaned
+
+
 def date_key(d: date) -> int:
     return d.year * 10000 + d.month * 100 + d.day
 
@@ -131,6 +137,8 @@ def utc_now() -> datetime:
 
 def main() -> None:
     rows = read_source()
+    for r in rows:
+        r["complaint_type"] = normalize_type(r["complaint_type"])
     print(f"Read {len(rows):,} complaints from MariaDB")
     if not rows:
         raise SystemExit("Nothing to load; run the ingestor first")

@@ -30,9 +30,17 @@ if [[ -z "$SERVER" || "$SERVER" == "your-server" ]]; then
   SERVER="nyc311-sql-$(openssl rand -hex 3)"
 fi
 PASSWORD="$(env_value AZURE_SQL_PASSWORD)"
+NEW_PASSWORD=false
 if [[ -z "$PASSWORD" || "$PASSWORD" == "put_password_here" ]]; then
   PASSWORD="N3w-$(openssl rand -base64 18 | tr -dc 'A-Za-z0-9')!"
+  NEW_PASSWORD=true
 fi
+
+# save right away so a failed run never loses the password
+set_env AZURE_SQL_SERVER "$SERVER.database.windows.net"
+set_env AZURE_SQL_DATABASE "$DATABASE"
+set_env AZURE_SQL_USER "$ADMIN_USER"
+set_env AZURE_SQL_PASSWORD "$PASSWORD"
 
 echo "Subscription: $(az account show --query name -o tsv)"
 echo "Creating resource group $RESOURCE_GROUP in $LOCATION"
@@ -43,14 +51,22 @@ if ! az sql server show -g "$RESOURCE_GROUP" -n "$SERVER" -o none 2>/dev/null; t
   az sql server create -g "$RESOURCE_GROUP" -n "$SERVER" -l "$LOCATION" \
     --admin-user "$ADMIN_USER" --admin-password "$PASSWORD" \
     --minimal-tls-version 1.2 -o none
+elif [[ "$NEW_PASSWORD" == true ]]; then
+  echo "Resetting the admin password for existing server $SERVER"
+  az sql server update -g "$RESOURCE_GROUP" -n "$SERVER" --admin-password "$PASSWORD" -o none
 fi
 
 echo "Opening the firewall to Azure services (Fabric/Power BI) and this machine"
 az sql server firewall-rule create -g "$RESOURCE_GROUP" -s "$SERVER" \
   -n AllowAzureServices --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0 -o none
-MY_IP="$(curl -s https://api.ipify.org)"
-az sql server firewall-rule create -g "$RESOURCE_GROUP" -s "$SERVER" \
-  -n DevMachine --start-ip-address "$MY_IP" --end-ip-address "$MY_IP" -o none
+MY_IP="$(curl -s -m 10 https://api.ipify.org || curl -s -m 10 https://checkip.amazonaws.com || true)"
+MY_IP="$(echo "$MY_IP" | tr -d '[:space:]')"
+if [[ -z "$MY_IP" ]]; then
+  echo "Could not detect this machine's public IP; add it later with: az sql server firewall-rule create" >&2
+else
+  az sql server firewall-rule create -g "$RESOURCE_GROUP" -s "$SERVER" \
+    -n DevMachine --start-ip-address "$MY_IP" --end-ip-address "$MY_IP" -o none
+fi
 
 if ! az sql db show -g "$RESOURCE_GROUP" -s "$SERVER" -n "$DATABASE" -o none 2>/dev/null; then
   echo "Creating database $DATABASE (free offer, pauses when idle)"
@@ -60,11 +76,6 @@ if ! az sql db show -g "$RESOURCE_GROUP" -s "$SERVER" -n "$DATABASE" -o none 2>/
     --use-free-limit --free-limit-exhaustion-behavior AutoPause \
     --backup-storage-redundancy Local -o none
 fi
-
-set_env AZURE_SQL_SERVER "$SERVER.database.windows.net"
-set_env AZURE_SQL_DATABASE "$DATABASE"
-set_env AZURE_SQL_USER "$ADMIN_USER"
-set_env AZURE_SQL_PASSWORD "$PASSWORD"
 
 echo
 echo "Done. Server: $SERVER.database.windows.net  Database: $DATABASE  User: $ADMIN_USER"
