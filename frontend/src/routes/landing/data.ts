@@ -1,7 +1,29 @@
-export const PITCH = [
-  "Every day, New York City receives tens of thousands of 311 services requests yet; most of this data remains inaccessible to the people who need it most.",
-  "311 complaint patterns transform overwhelming public datasets into actionable geographic insights. By visualizing service requests through interactive hexbin and clustered maps, the platform instantly reveals where urban issues are concentrated and how demand varies across neighborhoods.",
-  "Designed for residents, community organizations, and city stakeholders, the platform makes service demand visible, comparable, and understandable briefly. Instead of static tables or buried reports, users gain a citywide perspective on recurring issues and emerging problem.",
-  "This project demonstrates how public data can drive transparency, support data informed decision-making, and improve responsiveness in modern cities.",
-  "311 complaint patterns turn raw services data into insight, empowering communities through visualization.",
+export const FEATURES = [
+  {
+    title: "3D hotspot map",
+    description:
+      "Complaints stack into glowing columns over a tilted city. Hotspots jump out at a glance.",
+  },
+  {
+    title: "Filter anything",
+    description:
+      "Narrow by borough, complaint type, status and date range. Every view updates together.",
+  },
+  {
+    title: "Response times",
+    description: "Compare how quickly each city agency closes the requests it receives.",
+  },
+  {
+    title: "Trends over time",
+    description:
+      "Follow complaint volume day by day and spot seasonal spikes, like heat in winter.",
+  },
+];
+
+export const PIPELINE = [
+  { title: "NYC Open Data", description: "Public 311 service request feed" },
+  { title: "Python ingestor", description: "Pulls new records on a schedule" },
+  { title: "MariaDB", description: "Stores and indexes every request" },
+  { title: "Spring Boot API", description: "Serves filtered points and stats" },
+  { title: "React + deck.gl", description: "Renders the 3D map and charts" },
 ];

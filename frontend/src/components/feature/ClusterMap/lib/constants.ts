@@ -21,7 +21,7 @@ export const REFRESH_INTERVAL =
   1000;
 export const MIN_LOAD_MS = 300;
 export const PAN_RERANK_DEBOUNCE = 300;
-export const BG_COLOUR = "#f2efe9";
+export const BG_COLOUR = "#0b0f19";
 export const MAP_TESTID = "cluster-map";
 export const WRAPPER_TESTID = "cluster-map-wrapper";
 export const TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";

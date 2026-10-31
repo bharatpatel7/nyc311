@@ -2,14 +2,7 @@ import { Outlet, useLoaderData } from "react-router";
 import { clientLoader } from "./dashboard.clientLoader";
 import { useEffect, useState } from "react";
 import { fetchLastRefresh } from "@/lib/api";
-import {
-  CornerGlow,
-  PageBackground,
-  PageContainer,
-  DashboardHeader,
-  DashboardFooter,
-  DashboardNav,
-} from "./components";
+import { PageBackground, PageContainer, DashboardHeader, DashboardFooter } from "./components";
 // eslint-disable-next-line react-refresh/only-export-components
 export { clientLoader };
 
@@ -29,11 +22,11 @@ const DashboardLayout = () => {
 
   return (
     <PageBackground>
-      <CornerGlow />
       <PageContainer>
-        <DashboardHeader />
-        <DashboardNav />
-        <Outlet />
+        <DashboardHeader refresh={refresh} />
+        <main id="main-content" className="flex-1">
+          <Outlet />
+        </main>
         <DashboardFooter refresh={refresh} />
       </PageContainer>
     </PageBackground>

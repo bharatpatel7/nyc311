@@ -8,14 +8,12 @@ interface MapCardProps {
 }
 
 const MapCard = ({ isWalkthroughOpen, setIsWalkthroughOpen }: MapCardProps) => (
-  <div className="overflow-hidden rounded border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-white/5 dark:shadow-black/30 dark:backdrop-blur-sm">
+  <div className="glass overflow-hidden rounded-2xl">
     <Suspense
-      fallback={
-        <div className="h-[calc(100vh-220px)] min-h-[500px] bg-slate-100 dark:bg-slate-800" />
-      }
+      fallback={<div className="h-[calc(100vh-190px)] min-h-[500px] animate-pulse bg-white/5" />}
     >
       <ClusterMap
-        className="h-[calc(100vh-220px)] min-h-[500px]"
+        className="h-[calc(100vh-190px)] min-h-[500px]"
         isWalkthroughOpen={isWalkthroughOpen}
         setIsWalkthroughOpen={setIsWalkthroughOpen}
       />

@@ -6,10 +6,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import "@fontsource/poppins/400.css";
-import "@fontsource/poppins/500.css";
-import "@fontsource/poppins/600.css";
-import "@fontsource/poppins/700.css";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/space-grotesk";
 import theme from "./scripts/theme.ts?raw";
 import type { Route } from "./+types/root";
 import "./styles/index.css";
@@ -20,15 +18,16 @@ export const links: Route.LinksFunction = () => [];
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#05070d" />
         <meta
           name="description"
           content="Explore 311 complaint patterns and response times across New York City using interactive maps and data visualizations."
         />
-        <title>311 Complaint Patterns & Response Times</title>
+        <title>NYC311 · 3D complaint explorer</title>
         <Meta />
         <Links />
       </head>
@@ -65,9 +64,9 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
+    <main className="container mx-auto p-4 pt-16">
+      <h1 className="text-gradient text-6xl font-bold">{message}</h1>
+      <p className="mt-4 text-slate-400">{details}</p>
       {stack && (
         <pre className="w-full p-4 overflow-x-auto">
           <code>{stack}</code>

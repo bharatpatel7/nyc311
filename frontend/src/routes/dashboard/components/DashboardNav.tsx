@@ -1,31 +1,34 @@
 import { NavLink } from "react-router";
+import { FiActivity, FiBox, FiClock, FiGrid, FiMapPin } from "react-icons/fi";
 
 const navItems = [
-  { to: "/dashboard", label: "Dashboard", end: true },
-  { to: "/dashboard/map", label: "Map" },
-  { to: "/dashboard/trendchart", label: "Resolution Times" },
-  { to: "/dashboard/timechart", label: "Complaint Volumes" },
+  { to: "/dashboard", label: "Overview", icon: FiGrid, end: true },
+  { to: "/dashboard/city", label: "3D City", icon: FiBox },
+  { to: "/dashboard/map", label: "Cluster Map", icon: FiMapPin },
+  { to: "/dashboard/trendchart", label: "Resolution Times", icon: FiClock },
+  { to: "/dashboard/timechart", label: "Complaint Volumes", icon: FiActivity },
 ];
 
 const DashboardNav = () => (
   <nav
     aria-label="Dashboard views"
-    className="inline-flex mb-1 items-center gap-2 overflow-x-auto rounded-xl border border-white/50 bg-white/35 p-1.5 shadow-sm backdrop-blur-md dark:border-white/20 dark:bg-white/10 dark:shadow-black/30"
+    className="glass flex max-w-full items-center gap-1 overflow-x-auto rounded-full p-1"
   >
-    {navItems.map(({ to, label, end }) => (
+    {navItems.map(({ to, label, icon: Icon, end }) => (
       <NavLink
         key={to}
         to={to}
         end={end}
         className={({ isActive }) =>
           [
-            "rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors",
+            "flex shrink-0 items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-medium transition-all",
             isActive
-              ? "bg-slate-900 text-white shadow-sm dark:bg-slate-100 dark:text-slate-900"
-              : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white",
+              ? "bg-white text-ink shadow-[0_0_24px_-6px_rgba(34,211,238,0.9)]"
+              : "text-slate-300 hover:bg-white/10 hover:text-white",
           ].join(" ")
         }
       >
+        <Icon aria-hidden className="size-4" />
         {label}
       </NavLink>
     ))}

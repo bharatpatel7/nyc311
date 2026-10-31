@@ -2,9 +2,20 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk Variable", "Inter Variable", sans-serif;
+  --color-ink: #05070d;
+  --color-surface: #0b0f19;
+  --color-accent: #22d3ee;
+  --color-accent-2: #a78bfa;
+  --color-series-1: #3987e5;
+}
+
 @layer base {
   html {
-    @apply scroll-smooth bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+    @apply scroll-smooth bg-ink text-slate-100;
+    color-scheme: dark;
     scrollbar-gutter: stable;
   }
 
@@ -12,13 +23,147 @@
     @apply min-h-screen antialiased font-sans;
   }
 
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight;
+  }
+
   button {
     @apply cursor-pointer disabled:cursor-not-allowed;
   }
+
+  ::selection {
+    @apply bg-cyan-400/30 text-white;
+  }
 }
 
-@theme {
-  --font-sans: "Poppins", sans-serif;
+/* frosted glass panel — the base surface for cards, nav and overlays */
+@utility glass {
+  background: linear-gradient(145deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.02));
+  border: 1px solid rgb(255 255 255 / 0.1);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 20px 50px -20px rgb(0 0 0 / 0.6);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+
+@utility glass-strong {
+  background: rgb(10 14 25 / 0.72);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 20px 50px -20px rgb(0 0 0 / 0.7);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+
+@utility text-gradient {
+  background: linear-gradient(100deg, #67e8f9 0%, #3987e5 45%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* faint blueprint grid used behind dashboard pages */
+@utility bg-grid {
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 75%);
+}
+
+/* soft drifting colour blobs behind the glass */
+.aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.aurora::before,
+.aurora::after {
+  content: "";
+  position: absolute;
+  width: 55vw;
+  height: 55vw;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.22;
+  animation: drift 22s ease-in-out infinite alternate;
+}
+.aurora::before {
+  top: -20vw;
+  left: -10vw;
+  background: radial-gradient(circle, #0891b2, transparent 65%);
+}
+.aurora::after {
+  top: -10vw;
+  right: -15vw;
+  background: radial-gradient(circle, #7c3aed, transparent 65%);
+  animation-delay: -11s;
+}
+@keyframes drift {
+  to {
+    transform: translate3d(6vw, 4vw, 0) scale(1.15);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-rise {
+  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora::before,
+  .aurora::after,
+  .animate-rise {
+    animation: none;
+  }
+}
+
+/* OSM raster tiles inverted into a dark basemap for the cluster map */
+.leaflet-container {
+  background: #0b0f19;
+}
+.leaflet-tile-pane {
+  filter: invert(1) hue-rotate(200deg) brightness(0.85) contrast(0.9) saturate(0.4);
+}
+.leaflet-control-attribution {
+  background: rgb(10 14 25 / 0.6) !important;
+  color: #94a3b8 !important;
+}
+.leaflet-control-attribution a {
+  color: #cbd5e1 !important;
+}
+
+.maplibregl-ctrl-attrib {
+  background: rgb(10 14 25 / 0.6) !important;
+  color: #94a3b8 !important;
+}
+.maplibregl-ctrl-attrib a {
+  color: #cbd5e1 !important;
 }
 
 @keyframes mltShdSpin {

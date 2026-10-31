@@ -4,8 +4,11 @@ An interactive map-based dashboard for NYC 311 complaint data, highlighting tren
 
 ## Features
 
-- **Interactive map**: clustered markers across NYC with zoom, pan, and popup details
-- **Complaint filtering**: filter by borough, complaint type, status, and date range directly on the map
+- **3D city view**: complaints stack into extruded hexagon columns over a tilted, rotatable map of NYC (deck.gl + MapLibre), with heatmap and point modes
+- **Glass-style dark UI**: animated landing page, KPI overview, and dashboard views built with React, Tailwind CSS and Recharts
+- **Cluster map**: clustered markers across NYC with zoom, pan, and popup details
+- **Complaint filtering**: filter by borough, complaint type, status, and date range; every view shares the same filters
+- **Resolution times and volume trends**: compare agency response times and complaint volume over time
 - **Auto-refresh**: data reloads on a configurable interval with a "Last updated" indicator
 
 ## Prerequisites

@@ -1,29 +1,31 @@
 import { formatDate, formatTime } from "@/lib/util";
 import type { DataRefresh } from "@/types/logs";
-import { Link } from "react-router";
 
 interface DashboardFooterProps {
   refresh: DataRefresh | null;
 }
 
-const DashboardFooter = ({ refresh }: DashboardFooterProps) => {
-  return (
-    <footer className="mt-4 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
+const DashboardFooter = ({ refresh }: DashboardFooterProps) => (
+  <footer className="mt-5 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+    <span>
+      Data source:{" "}
+      <a
+        href="https://opendata.cityofnewyork.us/"
+        target="_blank"
+        rel="noreferrer"
+        className="text-slate-400 hover:text-cyan-300"
+      >
+        NYC Open Data
+      </a>
+    </span>
+    <span>Built by Bharat Garsondiya</span>
+    {refresh?.refreshStartedAt && (
       <span>
-        Data source:{" "}
-        <Link to="https://opendata.cityofnewyork.us/" className="hover:text-emerald-500/50">
-          NYC Open Data
-        </Link>
+        Last refresh: {formatDate(refresh.refreshStartedAt)} at{" "}
+        {formatTime(refresh.refreshStartedAt)}
       </span>
-
-      {refresh?.refreshStartedAt && (
-        <span>
-          Last refresh: {formatDate(refresh.refreshStartedAt)} at{" "}
-          {formatTime(refresh.refreshStartedAt)}
-        </span>
-      )}
-    </footer>
-  );
-};
+    )}
+  </footer>
+);
 
 export default DashboardFooter;

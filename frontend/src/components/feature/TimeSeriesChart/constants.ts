@@ -12,17 +12,16 @@ export const DEFAULT_VISIBLE = 5;
 export const TOP_N = 3;
 export const BOTTOM_N = 3;
 
+// categorical slots stepped for the dark surface; order keeps adjacent series colorblind-safe
 export const SERIES_COLORS = [
-  "#2563eb",
-  "#dc2626",
-  "#16a34a",
-  "#9333ea",
-  "#ea580c",
-  "#0891b2",
-  "#ca8a04",
-  "#be185d",
-  "#4f46e5",
-  "#059669",
+  "#3987e5",
+  "#d95926",
+  "#199e70",
+  "#c98500",
+  "#d55181",
+  "#008300",
+  "#9085e9",
+  "#e66767",
 ];
 
 export const CHART_TITLE = "Complaint Volume by Type";

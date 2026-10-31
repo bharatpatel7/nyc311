@@ -36,8 +36,8 @@ interface TooltipEntry {
 }
 
 const ComplaintVolumeChartContainer = ({ children }: { children: ReactNode }) => (
-  <div className="flex flex-col bg-white p-6 h-[calc(100vh-220px)] min-h-[500px] bg-slate-100 dark:bg-slate-800">
-    <h2 className="mb-4 shrink-0 text-lg font-semibold text-gray-900">{VOLUME_CHART_TITLE}</h2>
+  <div className="flex h-full flex-col p-6">
+    <h2 className="mb-4 shrink-0 text-lg font-semibold text-white">{VOLUME_CHART_TITLE}</h2>
     {children}
   </div>
 );
@@ -88,8 +88,8 @@ const CondensedTooltip = ({
   const middleCount = showAll ? 0 : total - TOP_N - BOTTOM_N;
 
   return (
-    <div className="rounded border border-gray-200 bg-white px-3 py-2 text-xs shadow-lg max-w-[280px]">
-      <p className="mb-1 font-semibold text-gray-900">{label}</p>
+    <div className="glass-strong max-w-[280px] rounded-xl px-3 py-2 text-xs text-slate-200">
+      <p className="mb-1 font-semibold text-white">{label}</p>
       {top.map((e) => (
         <div key={e.dataKey} className="flex items-center justify-between gap-4">
           <span className="flex items-center gap-1.5 truncate">
@@ -103,7 +103,7 @@ const CondensedTooltip = ({
         </div>
       ))}
       {middleCount > 0 && (
-        <div className="py-0.5 text-gray-400 text-center">
+        <div className="py-0.5 text-center text-slate-500">
           +{middleCount} other{middleCount > 1 ? "s" : ""}
         </div>
       )}
@@ -184,7 +184,7 @@ const ComplaintVolumeChart = () => {
   if (isLoading) {
     return (
       <ComplaintVolumeChartContainer>
-        <p className="text-gray-500">Loading...</p>
+        <p className="text-slate-400">Loading...</p>
       </ComplaintVolumeChartContainer>
     );
   }
@@ -192,7 +192,7 @@ const ComplaintVolumeChart = () => {
   if (isError) {
     return (
       <ComplaintVolumeChartContainer>
-        <p className="text-red-600">Failed to load complaint volume data.</p>
+        <p className="text-red-400">Failed to load complaint volume data.</p>
       </ComplaintVolumeChartContainer>
     );
   }
@@ -200,7 +200,7 @@ const ComplaintVolumeChart = () => {
   if (data.length === 0) {
     return (
       <ComplaintVolumeChartContainer>
-        <p className="text-gray-500">No complaint volume data available.</p>
+        <p className="text-slate-400">No complaint volume data available.</p>
       </ComplaintVolumeChartContainer>
     );
   }
@@ -228,12 +228,12 @@ const ComplaintVolumeChart = () => {
         <div className="min-h-0 flex-1 outline-none mt-4" onMouseDown={(e) => e.preventDefault()}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={rows} margin={{ top: 8, right: 24, left: 16, bottom: 48 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
               <XAxis
                 dataKey="period"
                 angle={-35}
                 textAnchor="end"
-                tick={{ fontSize: 12 }}
+                tick={{ fontSize: 12, fill: "#94a3b8" }}
                 interval={0}
               />
               <YAxis
@@ -242,9 +242,9 @@ const ComplaintVolumeChart = () => {
                   angle: -90,
                   position: "insideLeft",
                   offset: -4,
-                  style: { fontSize: 12 },
+                  style: { fontSize: 12, fill: "#94a3b8" },
                 }}
-                tick={{ fontSize: 12 }}
+                tick={{ fontSize: 12, fill: "#94a3b8" }}
               />
               <Tooltip isAnimationActive={false} content={<CondensedTooltip />} />
               {types.map((type, i) => (
@@ -274,13 +274,13 @@ const ComplaintVolumeChart = () => {
                 className="inline-block h-2.5 w-2.5 rounded-full shrink-0"
                 style={{
                   backgroundColor: hiddenTypes.has(type)
-                    ? "#d1d5db"
+                    ? "#475569"
                     : SERIES_COLORS[i % SERIES_COLORS.length],
                 }}
               />
               <span
                 style={{
-                  color: hiddenTypes.has(type) ? "#9ca3af" : undefined,
+                  color: hiddenTypes.has(type) ? "#64748b" : undefined,
                   textDecoration: hiddenTypes.has(type) ? "line-through" : undefined,
                 }}
               >
